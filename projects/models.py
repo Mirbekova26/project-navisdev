@@ -5,10 +5,14 @@ from django.urls import reverse
 
 
 class ProjectDirection(models.Model):
-    name = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True)
-    description = RichTextField()
-    image = models.ImageField(upload_to='projects/directions/')
+    name = models.CharField("Название направления", max_length=200)
+    slug = models.SlugField("URL", unique=True)
+    description = RichTextField("Описание")
+    image = models.ImageField("Изображение", upload_to='projects/directions/')
+
+    class Meta:
+        verbose_name = "Направление проекта"
+        verbose_name_plural = "Направления проектов"
 
     def get_absolute_url(self):
         return reverse('projects:direction_detail', args=[self.slug])
@@ -17,16 +21,22 @@ class ProjectDirection(models.Model):
         return self.name
 
 
-
-
 class Project(models.Model):
-    title = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True, blank=True)
-    direction = models.ForeignKey(ProjectDirection, on_delete=models.CASCADE)
-    description = RichTextField()
-    image = models.ImageField(upload_to='projects/')
-    date = models.DateField()
-    is_completed = models.BooleanField(default=True)
+    title = models.CharField("Название проекта", max_length=200)
+    slug = models.SlugField("URL", unique=True, blank=True)
+    direction = models.ForeignKey(
+        ProjectDirection,
+        verbose_name="Направление",
+        on_delete=models.CASCADE
+    )
+    description = RichTextField("Описание")
+    image = models.ImageField("Изображение", upload_to='projects/')
+    date = models.DateField("Дата")
+    is_completed = models.BooleanField("Завершён", default=True)
+
+    class Meta:
+        verbose_name = "Проект"
+        verbose_name_plural = "Проекты"
 
     def get_absolute_url(self):
         return reverse('projects:project_detail', args=[self.id])
